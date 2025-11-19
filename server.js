@@ -9,6 +9,7 @@ const authRoutes = require("./routes/auth");
 const messageRoutes = require("./routes/message");
 const leaveRoutes = require("./routes/leave");
 const attendanceRoutes = require("./routes/attendanceRoutes");
+const uploadRoutes = require("./routes/upload");
 
 const app = express();
 const server = http.createServer(app); // ✅ create http server for socket
@@ -20,11 +21,26 @@ app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/leave", leaveRoutes);
 app.use("/api/attendance", attendanceRoutes);
+app.use("/api/upload", uploadRoutes);
+
+app.get("/api/ip", async (req, res) => {
+  try {
+    const response = await fetch("https://api.ipify.org?format=json");
+    const data = await response.json();
+
+    res.json({ ip: data.ip });
+  } catch (err) {
+    res.status(500).json({ ip: null, error: "Failed to fetch IP" });
+  }
+});
+
 
 const startServer = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
     console.log("✅ MongoDB connected");
+
+    
 
     const PORT = process.env.PORT || 5000;
     server.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

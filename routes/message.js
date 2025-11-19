@@ -7,15 +7,22 @@ const Message = require("../models/Message");
 // ----------------------
 router.post("/", async (req, res) => {
   try {
-    const { senderId, receiverId, text } = req.body;
+    const { senderId, receiverId, text, fileUrl, fileType } = req.body;
 
-    if (!senderId || !receiverId || !text) {
-      return res.status(400).json({ message: "All fields are required" });
+    if (!senderId || !receiverId) {
+      return res.status(400).json({ message: "senderId and receiverId required" });
     }
 
-    const newMessage = new Message({ senderId, receiverId, text });
-    const savedMessage = await newMessage.save();
+    const newMessage = new Message({
+      senderId,
+      receiverId,
+      text: text || "",
+      fileUrl: fileUrl || "",
+      fileType: fileType || "text",
+    });
 
+    const savedMessage = await newMessage.save();
+    console.log("Message sent:", savedMessage); 
     res.status(201).json(savedMessage);
   } catch (err) {
     console.error("Error sending message:", err);

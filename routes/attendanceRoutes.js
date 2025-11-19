@@ -7,6 +7,7 @@ const router = express.Router();
 router.post("/", async (req, res) => {
   try {
     const { userId, name, date, duration, checkInTime, checkOutTime } = req.body;
+    //console.log("📥 Attendance data received:", req.body);
 
     if (!userId || !name || !date) {
       return res.status(400).json({ message: "Missing required fields" });
@@ -21,8 +22,12 @@ router.post("/", async (req, res) => {
         record.durations.push(duration);
       }
 
+      // Set check-in only if not already set
+      if (!record.checkInTime && checkInTime) {
+        record.checkInTime = checkInTime;
+    }
       // update times if needed
-      record.checkInTime = record.checkInTime || checkInTime;
+      //record.checkInTime = record.checkInTime || checkInTime;
       record.checkOutTime = checkOutTime || record.checkOutTime;
 
       await record.save();
@@ -41,7 +46,7 @@ router.post("/", async (req, res) => {
 
     res.json({ message: "Attendance saved successfully", record: newRecord });
   } catch (err) {
-    console.error("❌ Error saving attendance:", err);
+    //console.error("❌ Error saving attendance:", err);
     res.status(500).json({ message: "Server error" });
   }
 });
