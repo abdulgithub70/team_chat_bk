@@ -48,8 +48,9 @@ const startServer = async () => {
     // ✅ Socket.io setup
     const io = new Server(server, {
       cors: {
-        origin: "*", // change to your frontend URL in production
+        origin: "https://team-chat-ym6h.vercel.app", // change to your frontend URL in production
         methods: ["GET", "POST"],
+        credentials: true,
       },
     });
 
